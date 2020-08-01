@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>大麦商城</title>
+<link href="css/common.css" rel="stylesheet" type="text/css"/>
+<link href="css/login.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/axios.min.js"></script>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/comp.js"></script>
+<script type="text/javascript" src="js/foot.js"></script>
+</head>
+<body>
+
+<div id="header">
+	<page-head></page-head>
+</div>
+<script type="text/javascript">
+var vhead = new Vue({el:"#header"});
+</script>	
+<div class="container login">
+		<div class="span12">
+<div class="ad">
+	<img src="image/login.jpg" width="500" height="330" alt="会员登录" title="会员登录">
+</div>		
+</div>
+		<div class="span12 last">
+			<div class="wrap">
+				<div class="main">
+					<div class="title">
+						<strong>会员登录</strong>USER LOGIN
+					</div>
+					<div class="title">
+						
+					</div>
+					<form id="loginForm" action="login.html"  method="post" novalidate="novalidate">
+						<table>
+							<tbody><tr>
+								<th>
+										用户名:
+								</th>
+								<td>
+									<input type="text" v-model="ename" id="username" name="username" class="text" maxlength="20"/><span></span>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									密&nbsp;&nbsp;码:
+								</th>
+								<td>
+									<input type="password" v-model="password" id="password" name="password" class="text" maxlength="20" autocomplete="off"/><span></span>
+								</td>
+							</tr>
+								<tr>
+									<th>
+										验证码:
+									</th>
+									<td>
+										<span class="fieldSet">
+											<input type="text" id="captcha" v-model="vcode" name="captcha" class="text captcha" maxlength="4" autocomplete="off">
+											<img id="captchaImage" class="captchaImage" src="vcode.do"
+											onclick="this.src='vcode.do?a=' + new Date()"
+											 title="点击更换验证码" onclick="checkImg()">
+										</span>
+									</td>
+								</tr>
+							<tr>
+								<th>&nbsp;
+									
+								</th>
+								<td>
+									<label>
+										<input type="checkbox" id="isRememberUsername" name="isRememberUsername" value="true">记住用户名
+									</label>
+									<label>
+										&nbsp;&nbsp;<a :href="'reset.html#'+location.hash.substring(1)">找回密码</a>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<th>&nbsp;
+									
+								</th>
+								<td>
+									<input type="button" @click="login" class="submit" value="登 录">
+									<input type="button" @click="loginad" value="管理员登录">
+								</td>
+							</tr>
+							<tr class="register">
+								<th>&nbsp;
+									
+								</th>
+								<td>
+									<dl>
+										<dt>还没有注册账号？</dt>
+										<dd>
+											立即注册即可体验在线购物！
+											<a  :href="'reg.html#'+location.hash.substring(1)">立即注册</a>
+										</dd>
+									</dl>
+								</td>
+							</tr>
+						</tbody></table>
+					</form>
+					<script type="text/javascript">
+					var vue =new Vue({
+						el : "#loginForm",
+						data : {
+							ename : "",
+							password : "",
+							vcode : ""
+						},
+						methods : {
+							login(){
+								var url ="login.do?op=login";
+								var user = {
+									ename : this.ename,
+									password : this.password,
+									vcode : this.vcode
+								};
+								$.post(url,user, function(msg){
+									alert(msg);
+									if(msg == '登录成功'){
+										var id = location.hash.substring(1)
+										console.info(id)
+										location.href= "detail.html#"+id;
+									}
+								});
+							},
+							loginad(){
+								var url ="login.do?op=login1";
+								var user = {
+									username : this.ename,
+									password : this.password,
+									vcode : this.vcode
+								};
+								$.post(url,user, function(msg){
+									alert(msg);
+									if(msg == '登录成功'){
+										location.href= "bank/back.html"
+									}
+								});
+							},
+						}
+					});
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+<div id="footer">
+	<page-foot></page-foot>
+	</div>
+	<script type="text/javascript">
+	var vhead = new Vue({el:"#footer"});
+	</script>
+</body></html>

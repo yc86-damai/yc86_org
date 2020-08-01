@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品管理</title>
+<link rel="stylesheet" type="text/css"
+	href="easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+<script type="text/javascript" src="easyui/jquery.min.js"></script>
+<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="js/axios.min.js"></script>
+<style type="text/css">
+input{
+	width: 200px
+}
+
+</style>
+<script type="text/javascript">
+	
+	//图片字段的格式化方法
+	function fmtImg(value, row, index) {
+		//  <img height='100px' src='../products/1/cs10001.jpg'>   
+		return "<img height='100px' src='../"+value+"'>";
+	}
+	
+	// 出版时间字段的格式化方法
+	function fmtDate(date){
+		var y = date.getFullYear();
+		var m = date.getMonth()+1;
+		var d = date.getDate();
+		return y + "-" + m + '-' + d;
+	}
+	
+	function query(){
+		$('#dg').datagrid('load',{
+			pname: $("#pname").textbox('getValue'),
+			cid: $("#cid").textbox('getValue'),
+			//isHot: $("#isHot").checkbox('getValue'),
+		});
+	}
+	
+	// 操作字段的格式化方法
+	function fmtOp(value, row, index) {
+		return "<button onclick='edit("+index+")'>修改</button> <button onclick='edit1("+index+")'>设为默认地址</button>";
+	}
+	
+	// 打开修改窗口
+	function edit(index) {
+		$("#dd").dialog('open');
+		if(index != undefined){
+			var rows = $('#dg').datagrid("getRows");
+			$('#ff').form('load',rows[index]);
+		}else{
+			$('#ff').form('clear');
+		}
+	}
+	
+	function edit1(index){
+		var rows = $('#dg').datagrid("getRows");
+		$("#dd1").dialog('open');
+		$('#ff1').form('load',rows[index]);
+	}
+	
+	function save() {
+		$('#ff').form('submit',{
+			url : "addr.do",
+			onSubmit: function(param){
+				//  扩展请求参数
+				param.op = "save";
+			},
+			success : res=>{
+				res = JSON.parse(res);
+				alert(res.msg);
+				if(res.code == 1 ){
+					// 关闭窗口
+					$("#dd").dialog('close');
+					// 刷新表格
+					$('#dg').datagrid("reload");
+				}
+			}
+		});
+	}
+	
+	function update() {
+		$('#ff1').form('submit',{
+			url : "addr.do",
+			onSubmit: function(param){
+				//  扩展请求参数
+				param.op = "updateByUid";
+			},
+			success : res=>{
+				res = JSON.parse(res);
+				alert(res.msg);
+				if(res.code == 1 ){
+					// 关闭窗口
+					$("#dd1").dialog('close');
+					// 刷新表格
+					$('#dg').datagrid("reload");
+				}
+			}
+		});
+	}
+	
+	
+	
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'north'" style="height: 50px;">
+			<a id="btn" href="#" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'"
+				onclick="edit()">添加新地址</a>
+				<a id="btn" href="cart.html" class="easyui-linkbutton">返回</a>
+		</div>
+		<div data-options="region:'center',title:'查询结果', iconCls:'icon-ok'">
+			<table class="easyui-datagrid" id="dg"
+				data-options="
+				url:'addr.do?op=query',
+				method:'get',
+				border:false,
+				singleSelect:true,
+				fit:true,
+				fitColumns:true,
+				pagination:true">
+				<thead>
+					<tr>
+					<th data-options="field:'id', width:50">编号</th>
+					<th data-options="field:'uid', width:50">用户ID</th>
+					<th data-options="field:'addr', width:100">地址</th>
+					<th data-options="field:'phone', width:100">电话</th>
+					<th data-options="field:'name', width:100">收货人</th>
+					<th data-options="field:'dft', width:50">默认地址</th>
+					<th data-options="field:'createtime', width:100">上架日期</th>
+					<th data-options="field:'idd', width:100,formatter:fmtOp,align:'center'">操作</th>
+				</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	
+	<!-- 图书编辑窗口 -->
+	<div id="dd" class="easyui-dialog" title="地址信息修改窗口" style="width:350px;height:300px;"
+	    data-options="
+	    iconCls:'icon-save',
+	    resizable:true,
+	    modal:true,
+	    closed:true,
+	    buttons:'#bb'">
+	    <form id="ff">
+	    <input class="easyui-textbox" name="id" label="编号"><br>
+		<input class="easyui-textbox" name="addr" label="地址"><br>
+		<input class="easyui-numberbox" name="phone" label="电话"><br>
+		<input class="easyui-textbox" name="name" label="收货人"><br>
+		<input class="easyui-textbox" name="dft" label="默认地址"><br>
+		</form>
+	</div>
+	<div id="bb">
+		<a href="#" class="easyui-linkbutton" onclick="save()">保存</a>
+		<a href="#" class="easyui-linkbutton">放弃</a>
+	</div>
+	
+	
+	<div id="dd1" class="easyui-dialog" title="设为默认地址" style="width:300px;height:275px;"
+	    data-options="
+	    iconCls:'icon-save',
+	    resizable:true,
+	    modal:true,
+	    closed:true,
+	    buttons:'#bb1'">
+	    <form id="ff1">
+	    <input class="easyui-textbox" name="id" label="编号"><br>
+		<input class="easyui-textbox" name="uid" label="用户ID"><br>
+		<input class="easyui-textbox" name="addr" label="地址"><br>
+		<input class="easyui-numberbox" name="phone" label="电话"><br>
+		<input class="easyui-textbox" name="name" label="收货人"><br>
+		<h3>是/否设为默认地址</h3>
+		</form>
+	</div>
+	<div id="bb1">
+		<a href="#" class="easyui-linkbutton" onclick="update()">确定</a>
+		<a href="#" class="easyui-linkbutton">取消</a>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品管理</title>
+<link rel="stylesheet" type="text/css"
+	href="easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+<script type="text/javascript" src="easyui/jquery.min.js"></script>
+<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<style type="text/css">
+input{
+	width: 200px
+}
+</style>
+<script type="text/javascript">
+	
+	//图片字段的格式化方法
+	function fmtImg(value, row, index) {
+		//  <img height='100px' src='../products/1/cs10001.jpg'>   
+		return "<img height='100px' src='../"+value+"'>";
+	}
+	
+	// 出版时间字段的格式化方法
+	function fmtDate(date){
+		var y = date.getFullYear();
+		var m = date.getMonth()+1;
+		var d = date.getDate();
+		return y + "-" + m + '-' + d;
+	}
+	
+	function query(){
+		$('#dg').datagrid('load',{
+			ename: $("#ename").textbox('getValue'),
+			name: $("#name").textbox('getValue'),
+		});
+	}
+	
+	
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'north'" style="height: 50px;">
+				<!-- prompt="书名:"  ==  data-options="prompt:'书名:'" -->
+			<div style="height: 50px; margin: 10px">
+			<input class="easyui-textbox" label="用户名:" style="width:200px" id="ename">
+			<input class="easyui-textbox" label="收货人:" style="width:200px" id="name">
+			<a id="btn" href="#" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'"
+				onclick="query()">查询</a>
+			</div>
+		</div>
+		<div data-options="region:'center',title:'查询结果', iconCls:'icon-ok'">
+			<table class="easyui-datagrid" id="dg"
+				data-options="
+				url:'../orders.do?op=queryOrder',
+				method:'get',
+				border:false,
+				singleSelect:true,
+				fit:true,
+				fitColumns:true,
+				pagination:true">
+				<thead>
+					<tr>
+						<th data-options="field:'id', width:20">编号</th>
+						<th data-options="field:'ename', width:50,align:'center'">用户名</th>
+						<th data-options="field:'name', width:50,align:'center'">收货人</th>
+						<th data-options="field:'addr', width:50,align:'center'">收货地址</th>
+						<th data-options="field:'phone', width:75,align:'center'">联系电话</th>
+						<th data-options="field:'total', width:50,align:'center'">付款金额</th>
+						<th data-options="field:'state', width:50,align:'center'">订单状态</th>
+						<th data-options="field:'createtime', width:90,align:'center'">付款日期</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	
+</body>
+</html>

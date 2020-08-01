@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>信息管理</title>
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/axios.min.js"></script>
+<style>
+body {
+	margin: 0px;
+	width: 100%;
+	height: 100%
+}
+.mailTable {
+	width: 100%;
+	border-top: 100px solid orange;
+	border-left: 100px solid white;
+	border-right: 100px solid white;
+}
+
+.mailTable tr th {
+	width: 200px;
+	height: 35px;
+	line-height: 35px;
+	box-sizing: border-box;
+	padding: 0 0px;
+	border-bottom: 1px #E6EAEE;
+	border-right: 1px #E6EAEE;
+}
+
+.mailTable tr th.column {
+	background-color: #EFF3F6;
+	color: #393C3E;
+	width: 30%;
+}
+</style>
+</head>
+<body>
+
+
+	<div id="app" v-for=" user in ulist">
+
+		<table class="mailTable">
+
+			<tr>
+				<th class="column">账户名</th>
+				<td>{{user.ename}}</td>
+
+			</tr>
+			<tr>
+				<th class="column">昵称</th>
+				<td>{{user.cname}}</td>
+			</tr>
+			<tr>
+				<th class="column">密码</th>
+				<td><a :href="'modifypw.html#'+user.id">修改密码</a></td>
+			</tr>
+			<tr>
+				<th class="column">注册日期</th>
+				<td>{{user.createtime}}</td>
+			</tr>
+			<tr>
+				<th class="column">邮箱地址</th>
+				<td>{{user.email}}</td>
+			</tr>
+			<tr>
+				<th class="column">电话</th>
+				<td>{{user.phone}}</td>
+			</tr>
+			<tr>
+				<th class="column">性别</th>
+				<td>{{user.sex}}</td>
+			</tr>
+			<tr>
+				<td><a :href="'modify.html#'+user.id">修改个人资料</a></td>
+
+			</tr>
+		</table>
+	</div>
+	<script type="text/javascript">
+	var vue=new Vue({
+		el:"#app",
+		data:{
+			ulist:[],
+		},
+		created : function() {
+			var id = location.hash.substring(1);
+			console.info(id)
+			axios.get("user.do?op=query&id="+id)
+			.then( (res)=>{
+				console.info(res.data.list)
+				this.ulist = res.data.list;
+			});
+		}
+	});
+	</script>
+
+
+</body>
+</html>

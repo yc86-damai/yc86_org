@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>更改密码</title>
+<link href="css/common.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/axios.min.js"></script>
+<script type="text/javascript" src="js/foot.js"></script>
+<style type="text/css">
+#app {
+	background-color: #fff;
+	border-radius: 20px;
+	width: 450px;
+	height: 150px;
+	margin: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+</style>
+</head>
+<body>
+	<div id="header" class="container header">
+
+
+		<div class="span5">
+			<div class="logo">
+				<a href="index.html"> <img
+					src="image/r___________renleipic_01/logo.png" alt="依依不舍" />
+				</a>
+			</div>
+		</div>
+		<div class="span9">
+			<div class="headerAd">
+				<h1>修改登录密码</h1>
+			</div>
+		</div>
+		<div class="span10 last">
+			<div class="topNav clearfix">
+				<ul>
+
+					<li id="headerLogin" class="headerLogin"
+						style="display: list-item;"><span v-if="loginedUser != '' ">欢迎
+							{{loginedUser.ename}} <a href="login.html">切换用户</a>&nbsp;
+					</span> <span v-else>您尚未 <a
+							:href="'login.html#'+location.hash.substring(1)">登录</a> &nbsp;|
+							&nbsp; <A :href="'reg.html#'+location.hash.substring(1)">注册</A></span>|</li>
+					<li id="headerLogin" class="headerLogin"
+						style="display: list-item;"><a href="olist.html">我的订单</a>|</li>
+					<li id="headerRegister" class="headerRegister"
+						style="display: list-item;"><a href="index.html">退出</a>|</li>
+
+					<li id="headerUsername" class="headerUsername"></li>
+					<li id="headerLogout" class="headerLogout"><a>[退出]</a>|</li>
+					<li><a :href="'usermsg.html#'+loginedUser.id">个人中心</a> |</li>
+					<li><a>购物指南</a></li>
+				</ul>
+			</div>
+			<div class="cart">
+				<a href="cart.html">购物车</a>
+			</div>
+			<div class="phone">
+				客服热线: <strong>96008/53277764</strong>
+			</div>
+		</div>
+		<script type="text/javascript">
+				var vue1 =new Vue({
+					el :".span10",
+					data : {
+						loginedUser : ""
+					},
+					created : function(){
+						 var url = "GetLoginedUserServlet";
+						 $.post(url,null,function(data){
+							 if(data != "null"){
+								 vue1.$data.loginedUser = JSON.parse(data); 
+							 }
+						 });
+					}
+				}); 
+			</script>
+		<div class="span24">
+			<a href="index.html"> <img
+				src="image/r___________renleipic_01/czmm.png" alt="依依不舍" />
+			</a>
+
+		</div>
+	</div>
+	<div  id="app">
+		<table>
+			<tr>
+				<th>旧密码:</th>
+				<td>&nbsp;&nbsp;&nbsp;<input v-model="oldpwd" type="password"><span></span></td>
+			</tr>
+			<tr>
+				<th>新密码:</th>
+				<td>&nbsp;&nbsp;&nbsp;<input v-model="newpwd" type="password">&nbsp;&nbsp;(登录密码有数字构成)<span></span></td>
+			</tr>
+			<tr>
+				<th>确认密码:</th>
+				<td>&nbsp;&nbsp;&nbsp;<input v-model="repass" type="password">&nbsp;&nbsp;(必须和上面密码保持一致)<span></span></td>
+			</tr>
+		</table>
+		<br>
+		<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" @click="save" class="submit" value="保 存"></div>
+		<br>
+		<div class="copyright">&copy;2020 damai.com 版权所有</div>
+	</div>
+	<script type="text/javascript">
+		var vue1 = new Vue({
+			el : "#app",
+			data : {
+				oldpwd : "",
+				newpwd : "",
+				repass : ""
+			},
+			methods : {
+				save(){
+					var id = location.hash.substring(1);
+					console.info(id)
+					var url ="user.do?op=savepw&id="+id;
+					var user = {
+						oldpwd : this.oldpwd,
+						newpwd : this.newpwd,
+						repass : this.repass,
+					};
+					$.post(url,user, function(msg){
+						alert(msg);
+						if(msg == '密码修改成功！'){
+							/* location.href= " index.html "; */
+						}
+					});
+				}
+			}
+		});
+		</script>
+
+
+
+
+</body>
+</html>
